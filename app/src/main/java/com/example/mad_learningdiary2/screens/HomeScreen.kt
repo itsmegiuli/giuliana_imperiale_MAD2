@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -23,34 +22,16 @@ import com.example.mad_learningdiary2.ScreenRoutes
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
 
-/*
 @Composable
-fun HomeScreen() {
-    MyList()
-}
-
-*/
-
-@Composable
-fun MyList(movies: List<Movie> = getMovies(), navController: NavController) {
+fun HomeScreen (navController: NavController) {
     Column(Modifier.fillMaxWidth()) {
-        Menu()
-        LazyColumn {
-            items(movies) { movie ->
-                MovieRow(movie = movie) { movieId ->
-                    Log.d("Maincontent,", "Movie clicked --> $movieId")
-                    // Replace the Log() call with a
-                    navController.navigate(route= ScreenRoutes.Details.route + "/$movieId")
-
-                }
-            }
-        }
+        Menu(navController)
+        MyList(navController = navController)
     }
 }
 
-@Preview
 @Composable
-fun Menu() { // blue app in the top of the screen
+fun Menu(navController: NavController) { // blue app in the top of the screen
     var expandedState by remember { mutableStateOf(false) } //used in expanded card
 
     TopAppBar(
@@ -66,7 +47,9 @@ fun Menu() { // blue app in the top of the screen
             DropdownMenu(
                 expanded = expandedState,
                 onDismissRequest = { expandedState = false }) {
-                DropdownMenuItem(onClick = {}) { //to be added
+                DropdownMenuItem(onClick = {
+                    navController.navigate(route= ScreenRoutes.Favorites.route)
+                }) { //to be added
                     Icon(
                         contentDescription = "Favorite Icon",
                         imageVector = Icons.Filled.Favorite
@@ -78,6 +61,21 @@ fun Menu() { // blue app in the top of the screen
     )
 }
 
+
+@Composable
+fun MyList(movies: List<Movie> = getMovies(), navController: NavController) {
+    Column(Modifier.fillMaxWidth()) {
+        LazyColumn {
+            items(movies) { movie ->
+                MovieRow(movie = movie) { movieId ->
+                    //Log.d("Maincontent,", "Movie clicked --> $movieId")
+                    // Replace the Log() call with a
+                    navController.navigate(route= ScreenRoutes.Details.route + "/$movieId")
+                }
+            }
+        }
+    }
+}
 
 
 @Composable
@@ -133,23 +131,28 @@ fun MovieRow(movie: Movie, onItemClick : (String) -> Unit = {}) { // = {} defaul
                     contentDescription = "Show details"
                 )
             }
-            Row() {
+            Row {
                 AnimatedVisibility(visible = arrowUpOrDown) { //visible when arrow is clicked
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp)
-                    ) {
-                        Text(text = "Director: ${movie.director}")
-                        Text(text = "Release year: ${movie.year}")
-                        Text(text = "Genre: ${movie.genre}")
-                        Text(text = "Actors: ${movie.actors}")
-                        Text(text = "Raiting: ${movie.rating}")
-                        Divider(Modifier.padding(top = 20.dp, bottom = 20.dp))
-                        Text(text = "Plot: ${movie.plot}", Modifier.padding(6.dp))
-                    }
+                    Description(movie = movie)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun Description(movie: Movie) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(12.dp)
+    ) {
+        Text(text = "Director: ${movie.director}")
+        Text(text = "Release year: ${movie.year}")
+        Text(text = "Genre: ${movie.genre}")
+        Text(text = "Actors: ${movie.actors}")
+        Text(text = "Raiting: ${movie.rating}")
+        Divider(Modifier.padding(top = 20.dp, bottom = 20.dp))
+        Text(text = "Plot: ${movie.plot}", Modifier.padding(6.dp))
     }
 }
