@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
+import com.example.mad_learningdiary2.viewModels.MoviesViewModel
 import com.example.mad_learningdiary2.widgets.HorizontalScrollableImageView
 import com.example.mad_learningdiary2.widgets.MovieRow
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
@@ -20,7 +21,9 @@ fun filterMovie(movieId: String): Movie {
 @Composable
 fun DetailScreen(
     navController: NavController,
-    movieId:String?){
+    movieId: String?,
+    movieViewModel: MoviesViewModel
+){
 
     movieId?.let {
         val movie = filterMovie(movieId = movieId)

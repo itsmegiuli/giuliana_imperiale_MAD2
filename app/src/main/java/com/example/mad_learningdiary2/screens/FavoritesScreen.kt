@@ -12,12 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
+import com.example.mad_learningdiary2.viewModels.MoviesViewModel
 import com.example.mad_learningdiary2.widgets.MovieRow
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
 //prep code by leon
 @Composable
-fun FavoritesScreen(navController: NavController){
+fun FavoritesScreen(
+    navController: NavController,
+    movieViewModel: MoviesViewModel
+){
     Scaffold(topBar = {
         SimpleTopAppBar(arrowBackClicked = { navController.popBackStack() }) {
             Text(text = "My Favorite Movies")

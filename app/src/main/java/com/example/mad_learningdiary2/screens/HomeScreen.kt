@@ -13,16 +13,21 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
+import com.example.mad_learningdiary2.viewModels.MoviesViewModel
 import com.example.mad_learningdiary2.widgets.HomeTopAppBar
 import com.example.mad_learningdiary2.widgets.MovieRow
 
 //prep code by leon
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()){
+fun HomeScreen(
+    navController: NavController = rememberNavController(),
+    movieViewModel: MoviesViewModel //inject the viewModel instance to use it's functionalities, movieViewModel: com.example.mad_learningdiary2.viewModels.MoviesViewModel){}
+               ){
     Scaffold(topBar = {
         HomeTopAppBar(
             title = "Home",
@@ -46,20 +51,22 @@ fun HomeScreen(navController: NavController = rememberNavController()){
             }
         )
     }) { padding ->
-        MainContent(modifier = Modifier.padding(padding), navController = navController)
+        MainContent(modifier = Modifier.padding(padding), navController = navController, movieViewModel= movieViewModel )
     }
 }
 
 @Composable
 fun MainContent(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    movieViewModel: MoviesViewModel
 ) {
     val movies = getMovies()
     MovieList(
         modifier = modifier,
         navController = navController,
-        movies = movies
+        movies = movies,
+        movieViewModel = movieViewModel
     )
 }
 
@@ -67,19 +74,21 @@ fun MainContent(
 fun MovieList(
     modifier: Modifier = Modifier,
     navController: NavController,
-    movies: List<Movie> = getMovies()
+    movies: List<Movie> = getMovies(),
+    movieViewModel: MoviesViewModel
 ) {
     LazyColumn (
         modifier = modifier,
         contentPadding = PaddingValues(all = 12.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(movies) { movie ->
+        items(movieViewModel.movieList) { movie ->
             MovieRow(
                 movie = movie,
                 onItemClick = { movieId ->
                     navController.navigate(ScreenRoutes.Details.withId(movieId))
-                }
+                },
+                onFavClick = {movieViewModel.toggleFavoriteState(movie)}
             )
         }
     }

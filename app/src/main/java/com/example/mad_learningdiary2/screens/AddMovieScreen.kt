@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.mad_learningdiary2.R
 import com.example.mad_learningdiary2.models.Genre
 import com.example.mad_learningdiary2.models.ListItemSelectable
+import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
 //prep code by leon
@@ -190,11 +191,16 @@ fun MainContent(modifier: Modifier = Modifier) {
                 isError = false
             )
 
+
             Button(
                 enabled = isEnabledSaveButton,
                 onClick = { /*TODO add a new movie to the movie list*/ }) {
                 Text(text = stringResource(R.string.add))
             }
         }
+    }
+
+    fun addMovie(movie: Movie) {
+
     }
 }

@@ -1,5 +1,6 @@
 package com.example.mad_learningdiary2.widgets
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,13 +34,15 @@ import com.example.mad_learningdiary2.R
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
 import com.example.mad_learningdiary2.ui.theme.Shapes
+import com.example.mad_learningdiary2.viewModels.MoviesViewModel
 
 @Preview
 @Composable
 fun MovieRow(
     movie: Movie = getMovies()[0],
     modifier: Modifier = Modifier,
-    onItemClick: (String) -> Unit = {}
+    onItemClick: (String) -> Unit = {},
+    onFavClick: (Movie) -> Unit = {} // TODO check if correct
 ) {
     Card(modifier = modifier
         .clickable {
@@ -57,7 +60,7 @@ fun MovieRow(
                 contentAlignment = Alignment.Center
             ) {
                 MovieImage(imageUrl = movie.images[0])
-                FavoriteIcon()
+                FavoriteIcon(movie, onFavClick) // passes which movie for onFavClick
             }
 
             MovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
@@ -83,11 +86,14 @@ fun MovieImage(imageUrl: String) {
 }
 
 @Composable
-fun FavoriteIcon() {
+fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(10.dp),
-        contentAlignment = Alignment.TopEnd
+        .padding(10.dp)
+        .clickable{ onFavClick(movie)},
+        contentAlignment = Alignment.TopEnd,
+
+
     ){
         Icon(
             tint = MaterialTheme.colors.secondary,
@@ -96,6 +102,11 @@ fun FavoriteIcon() {
     }
 }
 
+
+fun addAsFavorite(movie: Movie) { //TODO does this stay in widgets?
+    movie.isFavorite = true;
+    Log.i("String", movie.title)
+}
 
 @Composable
 fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {
