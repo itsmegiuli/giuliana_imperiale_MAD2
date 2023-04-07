@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
@@ -26,8 +27,8 @@ fun DetailScreen(
 ){
 
     movieId?.let {
-        val movie = filterMovie(movieId = movieId)
-
+        //val movie = filterMovie(movieId = movieId)
+        val movie = movieViewModel.filterMovie(movieId = movieId)
         // needed for show/hide snackbar
         val scaffoldState = rememberScaffoldState() // this contains the `SnackbarHostState`
 
@@ -38,13 +39,13 @@ fun DetailScreen(
                 }
             },
         ) { padding ->
-            MainContent(Modifier.padding(padding), movie)
+            MainContent(Modifier.padding(padding), movie, movieViewModel)
         }
     }
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier, movie: Movie) {
+fun MainContent(modifier: Modifier = Modifier, movie: Movie, movieViewModel: MoviesViewModel) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +57,9 @@ fun MainContent(modifier: Modifier = Modifier, movie: Movie) {
             verticalArrangement = Arrangement.Top
         ) {
 
-            MovieRow(movie = movie)
+            MovieRow(
+                movie = movie,
+                onFavClick = {movieViewModel.toggleFavoriteState(movie)})
 
             Spacer(modifier = Modifier.height(8.dp))
 

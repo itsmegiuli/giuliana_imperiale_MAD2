@@ -89,13 +89,13 @@ fun MovieImage(imageUrl: String) {
 fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(10.dp)
-        .clickable{ onFavClick(movie)},
+        .padding(10.dp),
         contentAlignment = Alignment.TopEnd,
 
 
     ){
-        Icon(
+        Icon(modifier = Modifier
+            .clickable{ onFavClick(movie)},
             tint = MaterialTheme.colors.secondary,
             imageVector = Icons.Default.FavoriteBorder,
             contentDescription = "Add to favorites")

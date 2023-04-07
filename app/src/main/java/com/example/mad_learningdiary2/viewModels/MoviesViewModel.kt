@@ -31,4 +31,8 @@ class MoviesViewModel : ViewModel() {
     fun getAllMovies () : List<Movie> {
         return _movieList
     }
+
+    fun filterMovie (movieId: String): Movie {
+        return _movieList.filter { it.id == movieId}[0]
+    }
 }
