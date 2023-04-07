@@ -27,8 +27,8 @@ fun FavoritesScreen(
             Text(text = "My Favorite Movies")
         }
     }){ padding ->
-        val movieList: List<Movie> = getMovies()
-
+        //val movieList: List<Movie> = getMovies()
+        val movieList: List<Movie> = movieViewModel.getFavorites()
         Column(modifier = Modifier.padding(padding)) {
             LazyColumn {
                 items(movieList){ movie ->
@@ -36,7 +36,8 @@ fun FavoritesScreen(
                         movie = movie,
                         onItemClick = { movieId ->
                             navController.navigate(route = ScreenRoutes.Details.withId(movieId))
-                        }
+                        },
+                        onFavClick = {movieViewModel.toggleFavoriteState(movie)}
                     )
                 }
             }
