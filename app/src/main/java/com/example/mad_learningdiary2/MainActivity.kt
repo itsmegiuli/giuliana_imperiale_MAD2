@@ -1,6 +1,7 @@
 package com.example.mad_learningdiary2
 
 import android.os.Bundle
+import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,9 +32,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role.Companion.Image
 import coil.compose.AsyncImage
 import com.example.mad_learningdiary2.navigation.MyNavigation
+import com.example.mad_learningdiary2.ui.theme.MovieAppMAD23Theme
 
 
-class MainActivity : ComponentActivity()  {
+class MainActivity : ComponentActivity()   {
+
+/*
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,7 +53,24 @@ class MainActivity : ComponentActivity()  {
             }
         }
     }
+
+ */
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MovieAppMAD23Theme {
+                MyNavigation()
+            }
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        Log.i("MainActivity", "onStart called")
+    }
 }
+
+
 /*
 @Preview
 @Composable

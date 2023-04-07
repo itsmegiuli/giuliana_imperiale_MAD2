@@ -45,3 +45,23 @@ fun MAD_LearningDiary2Theme(
         content = content
     )
 }
+
+//from prep code - by leon
+@Composable
+fun MovieAppMAD23Theme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
+    }
+
+    MaterialTheme(
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
+}

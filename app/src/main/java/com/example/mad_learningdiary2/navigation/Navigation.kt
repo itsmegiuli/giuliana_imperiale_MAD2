@@ -7,11 +7,7 @@ import androidx.navigation.compose.NavHost //added in build.gradle
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.mad_learningdiary2.ScreenRoutes
-import com.example.mad_learningdiary2.screens.DetailScreen
-import com.example.mad_learningdiary2.screens.FavoritesScreen
-import com.example.mad_learningdiary2.screens.HomeScreen
-import com.example.mad_learningdiary2.screens.MyList
+import com.example.mad_learningdiary2.screens.*
 
 
 @Composable
@@ -20,18 +16,34 @@ fun MyNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = ScreenRoutes.Home.route) { // first screen & also last screen (--> back)
-        composable(route = ScreenRoutes.Home.route) { HomeScreen(navController = navController) }
+
+        //homescreen
         composable(
-            route= ScreenRoutes.Details.route + "/{movieId}", //if more than 1 argument: separate it with /
+            route = ScreenRoutes.Home.route) {
+            HomeScreen(navController = navController)
+        }
+
+        //details
+        composable(
+            route= ScreenRoutes.Details.route,
             arguments= listOf(
-                navArgument("movieId") {
+                navArgument(name = DETAIL_ARGUMENT_KEY) {
                 type = NavType.StringType
             })
         ) {backStackEntry ->
-        DetailScreen(navController = navController, movieId = backStackEntry.arguments?.getString("movieId"))
+        DetailScreen(navController = navController, movieId = backStackEntry.arguments?.getString(DETAIL_ARGUMENT_KEY))
         }
-        composable(route=ScreenRoutes.Favorites.route) { FavoritesScreen(navController = navController)}
 
+        //favorites
+        composable(
+            route= ScreenRoutes.Favorites.route) {
+            FavoritesScreen(navController = navController)
+        }
+
+        //add movie
+        composable(ScreenRoutes.AddMovieScreen.route) {
+            AddMovieScreen(navController = navController)
+        }
         //composable("detailscreen") { DetailScreen() }
     }
 }
