@@ -1,9 +1,14 @@
 package com.example.mad_learningdiary2.viewModels
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
+import com.example.mad_learningdiary2.models.Genre
+import com.example.mad_learningdiary2.models.ListItemSelectable
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
+import com.example.mad_learningdiary2.screens.*
+import java.lang.Float
 
 
 //lecture task: implement a ViewModel that will handle a collection of ALL movies and movies that are marked as FAVORITE
@@ -40,3 +45,58 @@ class MoviesViewModel : ViewModel() {
         _movieList.add(movie)
     }
 }
+
+//add movie
+fun getSelectedGenreList (genreList: List<ListItemSelectable>): MutableList<Genre> {
+    val selectedGenreList: MutableList<Genre> = mutableListOf()
+    for (genre in genreList) {
+        if (genre.isSelected) {
+            selectedGenreList.add(enumValueOf(genre.title)) // TODO fix type mismatch --> how to get genre here???
+        }
+    }
+    return selectedGenreList
+}
+
+//refactor??
+/*
+fun validateInput (toValidate : String?): Boolean {
+    return if (toValidate != null) {
+        if(toValidate.isNotEmpty() ) {
+            Log.i("validation", "$toValidate is validated")
+            true
+        } else {
+            Log.i("validation", "$toValidate is not validated")
+            false
+        }
+    } else {
+        false
+    }
+}
+
+*/
+
+
+fun validateInput (toValidate : String): Boolean {
+    return if(toValidate.isNotEmpty() ) {
+            Log.i("validation", "$toValidate is validated")
+            true
+        } else {
+            Log.i("validation", "$toValidate is not validated")
+            false
+        }
+}
+
+fun validateIfString (toValidate: Any) : Boolean {
+    return toValidate is String // returns true if tovalidate is string
+}
+
+fun validateIfFloat (toValidate: Any) : Boolean {
+    return toValidate is kotlin.Float
+}
+//string & not empty: title, year, director, actors - done
+//string: plot (can be empty) - done
+//rating: float, not empty -
+//genres: at least 1 enum selected
+
+
+

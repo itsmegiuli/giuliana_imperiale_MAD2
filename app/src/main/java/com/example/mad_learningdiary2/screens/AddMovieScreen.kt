@@ -19,7 +19,7 @@ import com.example.mad_learningdiary2.R
 import com.example.mad_learningdiary2.models.Genre
 import com.example.mad_learningdiary2.models.ListItemSelectable
 import com.example.mad_learningdiary2.models.Movie
-import com.example.mad_learningdiary2.viewModels.MoviesViewModel
+import com.example.mad_learningdiary2.viewModels.*
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
 //prep code by leon
@@ -84,9 +84,15 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             var title by remember {
                 mutableStateOf("")
             }
+            var titleIsValid by remember {
+                mutableStateOf(false)
+            }
 
             var year by remember {
                 mutableStateOf("")
+            }
+            var yearIsValid by remember {
+                mutableStateOf(false)
             }
 
             val genres = Genre.values().toList()
@@ -101,32 +107,51 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     }
                 )
             }
+            var genreIsValid by remember {
+                mutableStateOf(true) // <--- change to false by default
+            }
 
             var director by remember {
                 mutableStateOf("")
+            }
+            var directorIsValid by remember {
+                mutableStateOf(false)
             }
 
             var actors by remember {
                 mutableStateOf("")
             }
+            var actorsIsValid by remember {
+                mutableStateOf(false)
+            }
 
             var plot by remember {
                 mutableStateOf("")
+            }
+            var plotIsValid by remember {
+                mutableStateOf(false)
             }
 
             var rating by remember {
                 mutableStateOf("")
             }
+            var ratingIsValid by remember {
+                mutableStateOf(false)
+            }
 
             var isEnabledSaveButton by remember {
-                mutableStateOf(true)
+                mutableStateOf(false) //???
             }
 
             OutlinedTextField(
                 value = title,
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { title = it },
+                onValueChange = {
+                    title = it
+                    titleIsValid = validateInput(it)
+                    isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+                },
                 label = { Text(text = stringResource(R.string.enter_movie_title)) },
                 isError = false
             )
@@ -135,7 +160,11 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 value = year,
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { year = it },
+                onValueChange = {
+                    year = it
+                    yearIsValid = validateInput(it)
+                    isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+                },
                 label = { Text(stringResource(R.string.enter_movie_year)) },
                 isError = false
             )
@@ -177,7 +206,11 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 value = director,
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { director = it },
+                onValueChange = {
+                    director = it
+                    directorIsValid = validateInput(it)
+                    isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+                },
                 label = { Text(stringResource(R.string.enter_director)) },
                 isError = false
             )
@@ -185,7 +218,11 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             OutlinedTextField(
                 value = actors,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { actors = it },
+                onValueChange = {
+                    actors = it
+                    actorsIsValid = validateInput(it)
+                    isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+                },
                 label = { Text(stringResource(R.string.enter_actors)) },
                 isError = false
             )
@@ -196,7 +233,11 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
-                onValueChange = { plot = it },
+                onValueChange = {
+                    plot = it
+                    plotIsValid = validateIfString(it)
+                    isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+                },
                 label = { Text(textAlign = TextAlign.Start, text = stringResource(R.string.enter_plot)) },
                 isError = false
             )
@@ -211,6 +252,9 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     } else {
                         it
                     }
+                    ratingIsValid = validateIfFloat(it.toFloat())
+                    isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+
                 },
                 label = { Text(stringResource(R.string.enter_rating)) },
                 isError = false
@@ -231,8 +275,12 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
-                rating = 7.9f // TODO somehow this makes it crash.. WHY?? validation needed first?
+                rating = 7.0f
+                //rating = rating.toFloat() // TODO somehow this makes it crash.. WHY?? validation needed first?
             )
+
+
+
 
             Button(
                 enabled = isEnabledSaveButton,
@@ -240,18 +288,19 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 }) {
                 Text(text = stringResource(R.string.add))
             }
+
         }
     }
 
 }
 
-fun getSelectedGenreList (genreList: List<ListItemSelectable>): MutableList<Genre> {
-    val selectedGenreList: MutableList<Genre> = mutableListOf()
-    for (genre in genreList) {
-        if (genre.isSelected) {
-            selectedGenreList.add(enumValueOf(genre.title)) // TODO fix type mismatch --> how to get genre here???
-        }
-    }
-    return selectedGenreList
+fun validatedOrNotPlaceHolder (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid: Boolean, directorIsValid: Boolean, actorsIsValid: Boolean, plotIsValid:Boolean, ratingIsValid: Boolean ) : Boolean {
+    return titleIsValid && yearIsValid && genreIsValid && directorIsValid && actorsIsValid && plotIsValid && ratingIsValid
+    //else error message???
+
 }
+fun enableSaveButton (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid: Boolean, directorIsValid: Boolean, actorsIsValid: Boolean, plotIsValid:Boolean, ratingIsValid: Boolean ) : Boolean {
+    return validatedOrNotPlaceHolder (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+}
+
 
