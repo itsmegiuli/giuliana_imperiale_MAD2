@@ -54,7 +54,9 @@ fun MyNavigation() {
 
         //add movie
         composable(ScreenRoutes.AddMovieScreen.route) {
-            AddMovieScreen(navController = navController)
+            AddMovieScreen(
+                navController = navController,
+                movieViewModel = movieViewModel)
         }
         //composable("detailscreen") { DetailScreen() }
     }

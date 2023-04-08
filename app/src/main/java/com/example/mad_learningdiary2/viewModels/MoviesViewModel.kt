@@ -35,4 +35,8 @@ class MoviesViewModel : ViewModel() {
     fun filterMovie (movieId: String): Movie {
         return _movieList.filter { it.id == movieId}[0]
     }
+
+    fun addMovie (movie: Movie) {
+        _movieList.add(movie)
+    }
 }

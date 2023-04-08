@@ -19,12 +19,37 @@ import com.example.mad_learningdiary2.R
 import com.example.mad_learningdiary2.models.Genre
 import com.example.mad_learningdiary2.models.ListItemSelectable
 import com.example.mad_learningdiary2.models.Movie
+import com.example.mad_learningdiary2.viewModels.MoviesViewModel
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
 //prep code by leon
 
+
+/**
+ *
+Users can add a new Movie to the Movie collection (AddMovieScreen). You can use the provided Composable as a template. Note: the template requires an Enum Class for Genres.
+Extend your ViewModel with the following functionalities:
+a)	Validate user input (use onValueChange listeners to call ViewModel functions):
+-	title (String; not empty)
+-	year (String; not empty)
+-	genres (Enum Genre; at least 1 must be selected)
+-	director (String, not empty)
+-	actors (String, not empty)
+-	plot (String)
+-	rating (Float, not empty)
+b)	Show an error text if user input is not valid
+c)	“Add” Button:
+-	Disabled by default
+-	Enable it if all user input is valid
+-	Add a movie to the collection onClick
+Note: Movie images are not required. Show a placeholder for newly added Movies in your MovieRow.
+
+ */
 @Composable
-fun AddMovieScreen(navController: NavController){
+fun AddMovieScreen(
+    navController: NavController,
+    movieViewModel: MoviesViewModel
+){
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
@@ -35,13 +60,13 @@ fun AddMovieScreen(navController: NavController){
             }
         },
     ) { padding ->
-        MainContent(Modifier.padding(padding))
+        MainContent(Modifier.padding(padding), movieViewModel)
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
+fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -191,16 +216,42 @@ fun MainContent(modifier: Modifier = Modifier) {
                 isError = false
             )
 
+            //needs to be here.. otherwise it crashes??
+            val newMovie: Movie = Movie(
+                id = "?", //id??
+                title = title,
+                year = year,
+                genre = getSelectedGenreList(genreList = genreItems),
+                director = director,
+                actors = actors,
+                plot = plot,
+
+                //place holder images:
+                images = listOf("https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
+                    "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
+                    "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
+                    "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
+                rating = 7.9f // TODO somehow this makes it crash.. WHY?? validation needed first?
+            )
 
             Button(
                 enabled = isEnabledSaveButton,
-                onClick = { /*TODO add a new movie to the movie list*/ }) {
+                onClick = { movieViewModel.addMovie(newMovie)
+                }) {
                 Text(text = stringResource(R.string.add))
             }
         }
     }
 
-    fun addMovie(movie: Movie) {
-
-    }
 }
+
+fun getSelectedGenreList (genreList: List<ListItemSelectable>): MutableList<Genre> {
+    val selectedGenreList: MutableList<Genre> = mutableListOf()
+    for (genre in genreList) {
+        if (genre.isSelected) {
+            selectedGenreList.add(enumValueOf(genre.title)) // TODO fix type mismatch --> how to get genre here???
+        }
+    }
+    return selectedGenreList
+}
+
