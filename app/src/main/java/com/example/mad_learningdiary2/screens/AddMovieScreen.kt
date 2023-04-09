@@ -1,5 +1,6 @@
 package com.example.mad_learningdiary2.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -91,6 +92,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             var year by remember {
                 mutableStateOf("")
             }
+
             var yearIsValid by remember {
                 mutableStateOf(false)
             }
@@ -143,6 +145,16 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 mutableStateOf(false) //???
             }
 
+            //show error state --- could this be replaced only using the validate state??
+            var yearShowErrorMessage by remember { mutableStateOf(false)}
+            var titleShowErrorMessage by remember { mutableStateOf(false)}
+            var genreShowErrorMessage by remember { mutableStateOf(false)}
+            var directorShowErrorMessage by remember { mutableStateOf(false)}
+            var actorsShowErrorMessage by remember { mutableStateOf(false)}
+            var plotShowErrorMessage by remember { mutableStateOf(false)}
+            var ratingShowErrorMessage by remember { mutableStateOf(false)}
+
+/** TITLE input **/
             OutlinedTextField(
                 value = title,
                 singleLine = true,
@@ -150,12 +162,13 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 onValueChange = {
                     title = it
                     titleIsValid = validateInput(it)
+                    titleShowErrorMessage = !titleIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
                 },
                 label = { Text(text = stringResource(R.string.enter_movie_title)) },
-                isError = false
+                isError = titleShowErrorMessage
             )
-
+/** YEAR input **/
             OutlinedTextField(
                 value = year,
                 singleLine = true,
@@ -163,12 +176,36 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 onValueChange = {
                     year = it
                     yearIsValid = validateInput(it)
+                    yearShowErrorMessage = !yearIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
-                },
-                label = { Text(stringResource(R.string.enter_movie_year)) },
-                isError = false
-            )
 
+                    //errorMessage(isError = !yearIsValid)
+
+                },
+                label = {Text(stringResource(R.string.enter_movie_year)) },
+                isError = yearShowErrorMessage,
+/*
+                keyboardActions = KeyboardActions(
+                    onDone = {
+
+
+                        //isError = !yearIsValid //show error line if is not valid
+
+
+
+                        //enable here the button?
+                    // validate here?
+                    // isUserBelow18 = validateAge(inputText = value)
+                    }
+                ) */
+
+            )
+            errorMessage(isError = yearShowErrorMessage)
+
+
+
+
+/** GENRE input **/ //TODO add error
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = stringResource(R.string.select_genres),
@@ -202,6 +239,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 }
             }
 
+/** DIRECTOR input **/
             OutlinedTextField(
                 value = director,
                 singleLine = true,
@@ -209,24 +247,28 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 onValueChange = {
                     director = it
                     directorIsValid = validateInput(it)
+                    directorShowErrorMessage = !directorIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
                 },
                 label = { Text(stringResource(R.string.enter_director)) },
-                isError = false
+                isError = directorShowErrorMessage
             )
 
+/** ACTORS input **/
             OutlinedTextField(
                 value = actors,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
                     actors = it
                     actorsIsValid = validateInput(it)
+                    actorsShowErrorMessage = !actorsIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
                 },
                 label = { Text(stringResource(R.string.enter_actors)) },
-                isError = false
+                isError = actorsShowErrorMessage
             )
 
+/** PLOT input **/
             OutlinedTextField(
                 value = plot,
                 singleLine = true,
@@ -236,12 +278,14 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 onValueChange = {
                     plot = it
                     plotIsValid = validateIfString(it)
+                    plotShowErrorMessage = !plotIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
                 },
                 label = { Text(textAlign = TextAlign.Start, text = stringResource(R.string.enter_plot)) },
-                isError = false
+                isError = plotShowErrorMessage
             )
 
+/** RATING input **/ //TODO fix
             OutlinedTextField(
                 value = rating,
                 singleLine = true,
@@ -253,11 +297,12 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                         it
                     }
                     ratingIsValid = validateIfFloat(it.toFloat())
+                    ratingShowErrorMessage = !ratingIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
 
                 },
                 label = { Text(stringResource(R.string.enter_rating)) },
-                isError = false
+                isError = ratingShowErrorMessage
             )
 
             //needs to be here.. otherwise it crashes??
@@ -294,6 +339,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
 
 }
 
+//TODO add var for which error?
 fun validatedOrNotPlaceHolder (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid: Boolean, directorIsValid: Boolean, actorsIsValid: Boolean, plotIsValid:Boolean, ratingIsValid: Boolean ) : Boolean {
     return titleIsValid && yearIsValid && genreIsValid && directorIsValid && actorsIsValid && plotIsValid && ratingIsValid
     //else error message???
@@ -303,4 +349,16 @@ fun enableSaveButton (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid:
     return validatedOrNotPlaceHolder (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
 }
 
+@Composable
+fun errorMessage (isError: Boolean) {
+    AnimatedVisibility (isError) {
+        Text(
+            text = "Error message",
+            color = MaterialTheme.colors.error,
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier.padding(start = 16.dp),
 
+        )
+    }
+
+}
