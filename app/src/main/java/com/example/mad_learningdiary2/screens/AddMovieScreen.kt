@@ -300,13 +300,19 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
+
+                    //rating = if (it.toFloatOrNull() == null) {
+                      //  0f.toString()
+                    //} else {
+                      //  it
+                    //} //prevents crash when invalid? - i wish
+
                     rating = if(it.startsWith("0")) {
                         ""
                     } else {
                         it
                     }
-                    ratingAsFloat = it.toFloat()
-                    ratingIsValid = validateIfFloat(ratingAsFloat)
+                    ratingIsValid = validateRating(it)
                     ratingShowErrorMessage = !ratingIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
 
@@ -314,7 +320,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_rating)) },
                 isError = ratingShowErrorMessage
             )
-            errorMessage(isError = ratingShowErrorMessage, "rating")
+            errorMessage(isError = ratingShowErrorMessage, "rating", "Invalid. Choose a number between 0 and 10")
 
 /** NEW MOVIE **/
             //needs to be here.. otherwise it crashes??
@@ -333,7 +339,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
                 //rating = 7.0f
-                rating = ratingAsFloat
+                rating = if (ratingIsValid) rating.toFloat() else 0f
 
     // TODO somehow this makes it crash.. WHY?? validation needed first?
             )

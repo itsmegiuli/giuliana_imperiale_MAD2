@@ -1,14 +1,11 @@
 package com.example.mad_learningdiary2.viewModels
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.mad_learningdiary2.models.Genre
 import com.example.mad_learningdiary2.models.ListItemSelectable
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.models.getMovies
-import com.example.mad_learningdiary2.screens.*
-import java.lang.Float
 
 
 //lecture task: implement a ViewModel that will handle a collection of ALL movies and movies that are marked as FAVORITE
@@ -90,8 +87,8 @@ fun validateIfString (toValidate: Any) : Boolean {
     return toValidate is String // returns true if tovalidate is string
 }
 
-fun validateIfFloat (toValidate: Any) : Boolean {
-    return toValidate is kotlin.Float
+fun validateRating (toValidate: String): Boolean {
+    return toValidate.toFloatOrNull() != null && toValidate.toFloat() in 0.0..10.0
 }
 //string & not empty: title, year, director, actors - done
 //string: plot (can be empty) - done
