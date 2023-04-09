@@ -48,7 +48,7 @@ fun getSelectedGenreList (genreList: List<ListItemSelectable>): MutableList<Genr
     val selectedGenreList: MutableList<Genre> = mutableListOf()
     for (genre in genreList) {
         if (genre.isSelected) {
-            selectedGenreList.add(enumValueOf(genre.title)) // TODO fix type mismatch --> how to get genre here???
+            selectedGenreList.add(enumValueOf(genre.title))
         }
     }
     return selectedGenreList

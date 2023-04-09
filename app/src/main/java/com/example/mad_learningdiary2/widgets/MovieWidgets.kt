@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -42,7 +43,7 @@ fun MovieRow(
     movie: Movie = getMovies()[0],
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit = {},
-    onFavClick: (Movie) -> Unit = {} // TODO check if correct
+    onFavClick: (Movie) -> Unit = {}
 ) {
     Card(modifier = modifier
         .clickable {
@@ -87,6 +88,10 @@ fun MovieImage(imageUrl: String) {
 
 @Composable
 fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
+    var favIcon by remember { mutableStateOf(Icons.Default.FavoriteBorder) }
+    favIcon = if (movie.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+
+
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(10.dp),
@@ -97,16 +102,10 @@ fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
         Icon(modifier = Modifier
             .clickable{ onFavClick(movie)},
             tint = MaterialTheme.colors.secondary,
-            imageVector = Icons.Default.FavoriteBorder,
+            imageVector = favIcon,
             contentDescription = "Add to favorites")
     }
 }
-
-/*
-fun addAsFavorite(movie: Movie) { //TODO does this stay in widgets?
-    movie.isFavorite = true;
-    Log.i("String", movie.title)
-}*/
 
 @Composable
 fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {

@@ -141,6 +141,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
                     title = it
+                    //todo maybe not 2 different var needed for _IsValid & _ShowErrorMessage
                     titleIsValid = validateInput(it)
                     titleShowErrorMessage = !titleIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
@@ -173,7 +174,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
 
 
 
-/** GENRE input **/ //TODO add error
+/** GENRE input **/
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = stringResource(R.string.select_genres),
@@ -262,7 +263,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             )
             errorMessage(isError = plotShowErrorMessage, "plot") //message?
 
-/** RATING input **/ //TODO fix
+/** RATING input **/
             OutlinedTextField(
                 value = rating,
                 singleLine = true,
@@ -291,7 +292,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             errorMessage(isError = ratingShowErrorMessage, "rating", "Invalid. Choose a number between 0 and 10")
 
 /** NEW MOVIE **/
-            //needs to be here.. otherwise it crashes??
             val newMovie: Movie = Movie(
                 id = "?", //id??
                 title = title,
@@ -307,9 +307,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
                 //rating = 7.0f
-                rating = if (ratingIsValid) rating.toFloat() else 0f
-
-    // TODO somehow this makes it crash.. WHY?? validation needed first?
+                rating = if (ratingIsValid) rating.toFloat() else 0f //needed so it doesnt crash at input
             )
 
 
@@ -327,14 +325,9 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
 
 }
 
-//TODO add var for which error?
-fun validatedOrNotPlaceHolder (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid: Boolean, directorIsValid: Boolean, actorsIsValid: Boolean, plotIsValid:Boolean, ratingIsValid: Boolean ) : Boolean {
-    return titleIsValid && yearIsValid && genreIsValid && directorIsValid && actorsIsValid && plotIsValid && ratingIsValid
-    //else error message???
 
-}
 fun enableSaveButton (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid: Boolean, directorIsValid: Boolean, actorsIsValid: Boolean, plotIsValid:Boolean, ratingIsValid: Boolean ) : Boolean {
-    return validatedOrNotPlaceHolder (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+    return titleIsValid && yearIsValid && genreIsValid && directorIsValid && actorsIsValid && plotIsValid && ratingIsValid
 }
 
 @Composable
