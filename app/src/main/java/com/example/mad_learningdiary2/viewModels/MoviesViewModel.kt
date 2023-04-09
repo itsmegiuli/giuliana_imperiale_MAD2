@@ -90,6 +90,10 @@ fun validateIfString (toValidate: Any) : Boolean {
 fun validateRating (toValidate: String): Boolean {
     return toValidate.toFloatOrNull() != null && toValidate.toFloat() in 0.0..10.0
 }
+
+fun validateGenre (genreList: MutableList<Genre>) : Boolean {
+    return genreList.isNotEmpty()
+}
 //string & not empty: title, year, director, actors - done
 //string: plot (can be empty) - done
 //rating: float, not empty -

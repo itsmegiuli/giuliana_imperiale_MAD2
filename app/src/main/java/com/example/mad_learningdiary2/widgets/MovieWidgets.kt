@@ -102,11 +102,11 @@ fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
     }
 }
 
-
+/*
 fun addAsFavorite(movie: Movie) { //TODO does this stay in widgets?
     movie.isFavorite = true;
     Log.i("String", movie.title)
-}
+}*/
 
 @Composable
 fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {

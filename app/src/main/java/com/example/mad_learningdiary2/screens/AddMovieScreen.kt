@@ -25,27 +25,6 @@ import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
 //prep code by leon
 
-
-/**
- *
-Users can add a new Movie to the Movie collection (AddMovieScreen). You can use the provided Composable as a template. Note: the template requires an Enum Class for Genres.
-Extend your ViewModel with the following functionalities:
-a)	Validate user input (use onValueChange listeners to call ViewModel functions):
--	title (String; not empty)
--	year (String; not empty)
--	genres (Enum Genre; at least 1 must be selected) TODO
--	director (String, not empty)
--	actors (String, not empty)
--	plot (String)
--	rating (Float, not empty) TODO
-b)	Show an error text if user input is not valid - done
-c)	“Add” Button:
--	Disabled by default - done
--	Enable it if all user input is valid - done
--	Add a movie to the collection onClick - done
-Note: Movie images are not required. Show a placeholder for newly added Movies in your MovieRow. - done
-
- */
 @Composable
 fun AddMovieScreen(
     navController: NavController,
@@ -110,7 +89,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 )
             }
             var genreIsValid by remember {
-                mutableStateOf(true) // <--- change to false by default
+                mutableStateOf(false)
             }
 
             var director by remember {
@@ -134,7 +113,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 mutableStateOf(false)
             }
 
-            //  WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
             var rating by remember {
                 mutableStateOf("")
             }
@@ -142,8 +120,9 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 mutableStateOf(false)
             }
 
+            //button disabled by default
             var isEnabledSaveButton by remember {
-                mutableStateOf(false) //???
+                mutableStateOf(false)
             }
 
             //show error state --- could this be replaced only using the validate state??
@@ -155,8 +134,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             var plotShowErrorMessage by remember { mutableStateOf(false)}
             var ratingShowErrorMessage by remember { mutableStateOf(false)}
 
-            //var ratingAsFloat = 0.0f
-            var ratingAsFloat by remember { mutableStateOf(0f)}
 /** TITLE input **/
             OutlinedTextField(
                 value = title,
@@ -189,20 +166,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 },
                 label = {Text(stringResource(R.string.enter_movie_year)) },
                 isError = yearShowErrorMessage,
-/*
-                keyboardActions = KeyboardActions(
-                    onDone = {
-
-
-                        //isError = !yearIsValid //show error line if is not valid
-
-
-
-                        //enable here the button?
-                    // validate here?
-                    // isUserBelow18 = validateAge(inputText = value)
-                    }
-                ) */
 
             )
             errorMessage(isError = yearShowErrorMessage, "year")
@@ -237,12 +200,17 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                                     it
                                 }
                             }
+                            genreIsValid = validateGenre(getSelectedGenreList(genreList = genreItems))
+                            genreShowErrorMessage = !genreIsValid
+                            isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
+
                         }
                     ) {
                         Text(text = genreItem.title)
                     }
                 }
             }
+
             errorMessage(isError = genreShowErrorMessage, "genre", "Choose at least 1 genre")
 
 /** DIRECTOR input **/
