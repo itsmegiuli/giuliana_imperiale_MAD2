@@ -33,17 +33,17 @@ Extend your ViewModel with the following functionalities:
 a)	Validate user input (use onValueChange listeners to call ViewModel functions):
 -	title (String; not empty)
 -	year (String; not empty)
--	genres (Enum Genre; at least 1 must be selected)
+-	genres (Enum Genre; at least 1 must be selected) TODO
 -	director (String, not empty)
 -	actors (String, not empty)
 -	plot (String)
--	rating (Float, not empty)
-b)	Show an error text if user input is not valid
+-	rating (Float, not empty) TODO
+b)	Show an error text if user input is not valid - done
 c)	“Add” Button:
--	Disabled by default
--	Enable it if all user input is valid
--	Add a movie to the collection onClick
-Note: Movie images are not required. Show a placeholder for newly added Movies in your MovieRow.
+-	Disabled by default - done
+-	Enable it if all user input is valid - done
+-	Add a movie to the collection onClick - done
+Note: Movie images are not required. Show a placeholder for newly added Movies in your MovieRow. - done
 
  */
 @Composable
@@ -134,6 +134,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 mutableStateOf(false)
             }
 
+            //  WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
             var rating by remember {
                 mutableStateOf("")
             }
@@ -154,6 +155,8 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             var plotShowErrorMessage by remember { mutableStateOf(false)}
             var ratingShowErrorMessage by remember { mutableStateOf(false)}
 
+            //var ratingAsFloat = 0.0f
+            var ratingAsFloat by remember { mutableStateOf(0f)}
 /** TITLE input **/
             OutlinedTextField(
                 value = title,
@@ -168,6 +171,8 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(text = stringResource(R.string.enter_movie_title)) },
                 isError = titleShowErrorMessage
             )
+            errorMessage(isError = titleShowErrorMessage, "title")
+
 /** YEAR input **/
             OutlinedTextField(
                 value = year,
@@ -200,7 +205,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 ) */
 
             )
-            errorMessage(isError = yearShowErrorMessage)
+            errorMessage(isError = yearShowErrorMessage, "year")
 
 
 
@@ -238,6 +243,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     }
                 }
             }
+            errorMessage(isError = genreShowErrorMessage, "genre", "Choose at least 1 genre")
 
 /** DIRECTOR input **/
             OutlinedTextField(
@@ -253,6 +259,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_director)) },
                 isError = directorShowErrorMessage
             )
+            errorMessage(isError = directorShowErrorMessage, "director")
 
 /** ACTORS input **/
             OutlinedTextField(
@@ -267,6 +274,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_actors)) },
                 isError = actorsShowErrorMessage
             )
+            errorMessage(isError = actorsShowErrorMessage, "actor")
 
 /** PLOT input **/
             OutlinedTextField(
@@ -284,6 +292,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(textAlign = TextAlign.Start, text = stringResource(R.string.enter_plot)) },
                 isError = plotShowErrorMessage
             )
+            errorMessage(isError = plotShowErrorMessage, "plot") //message?
 
 /** RATING input **/ //TODO fix
             OutlinedTextField(
@@ -296,7 +305,8 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     } else {
                         it
                     }
-                    ratingIsValid = validateIfFloat(it.toFloat())
+                    ratingAsFloat = it.toFloat()
+                    ratingIsValid = validateIfFloat(ratingAsFloat)
                     ratingShowErrorMessage = !ratingIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
 
@@ -304,7 +314,9 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_rating)) },
                 isError = ratingShowErrorMessage
             )
+            errorMessage(isError = ratingShowErrorMessage, "rating")
 
+/** NEW MOVIE **/
             //needs to be here.. otherwise it crashes??
             val newMovie: Movie = Movie(
                 id = "?", //id??
@@ -320,8 +332,10 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
                     "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
-                rating = 7.0f
-                //rating = rating.toFloat() // TODO somehow this makes it crash.. WHY?? validation needed first?
+                //rating = 7.0f
+                rating = ratingAsFloat
+
+    // TODO somehow this makes it crash.. WHY?? validation needed first?
             )
 
 
@@ -350,10 +364,10 @@ fun enableSaveButton (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid:
 }
 
 @Composable
-fun errorMessage (isError: Boolean) {
+fun errorMessage (isError: Boolean, variable: String, message: String = "Invalid $variable entered") {
     AnimatedVisibility (isError) {
         Text(
-            text = "Error message",
+            text = message,
             color = MaterialTheme.colors.error,
             style = MaterialTheme.typography.caption,
             modifier = Modifier.padding(start = 16.dp),
