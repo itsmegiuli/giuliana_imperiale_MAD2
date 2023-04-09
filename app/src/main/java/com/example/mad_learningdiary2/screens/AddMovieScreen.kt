@@ -149,7 +149,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(text = stringResource(R.string.enter_movie_title)) },
                 isError = titleShowErrorMessage
             )
-            errorMessage(isError = titleShowErrorMessage, "title")
+            ErrorMessage(isError = titleShowErrorMessage, "title")
 
 /** YEAR input **/
             OutlinedTextField(
@@ -169,7 +169,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 isError = yearShowErrorMessage,
 
             )
-            errorMessage(isError = yearShowErrorMessage, "year")
+            ErrorMessage(isError = yearShowErrorMessage, "year")
 
 
 
@@ -212,7 +212,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 }
             }
 
-            errorMessage(isError = genreShowErrorMessage, "genre", "Choose at least 1 genre")
+            ErrorMessage(isError = genreShowErrorMessage, "genre", "Choose at least 1 genre")
 
 /** DIRECTOR input **/
             OutlinedTextField(
@@ -228,7 +228,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_director)) },
                 isError = directorShowErrorMessage
             )
-            errorMessage(isError = directorShowErrorMessage, "director")
+            ErrorMessage(isError = directorShowErrorMessage, "director")
 
 /** ACTORS input **/
             OutlinedTextField(
@@ -243,7 +243,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_actors)) },
                 isError = actorsShowErrorMessage
             )
-            errorMessage(isError = actorsShowErrorMessage, "actor")
+            ErrorMessage(isError = actorsShowErrorMessage, "actor")
 
 /** PLOT input **/
             OutlinedTextField(
@@ -261,7 +261,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(textAlign = TextAlign.Start, text = stringResource(R.string.enter_plot)) },
                 isError = plotShowErrorMessage
             )
-            errorMessage(isError = plotShowErrorMessage, "plot") //message?
+            ErrorMessage(isError = plotShowErrorMessage, "plot") //message?
 
 /** RATING input **/
             OutlinedTextField(
@@ -289,33 +289,34 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 label = { Text(stringResource(R.string.enter_rating)) },
                 isError = ratingShowErrorMessage
             )
-            errorMessage(isError = ratingShowErrorMessage, "rating", "Invalid. Choose a number between 0 and 10")
+            ErrorMessage(isError = ratingShowErrorMessage, "rating", "Invalid. Choose a number between 0 and 10")
 
-/** NEW MOVIE **/
-            val newMovie: Movie = Movie(
-                id = "?", //id??
-                title = title,
-                year = year,
-                genre = getSelectedGenreList(genreList = genreItems),
-                director = director,
-                actors = actors,
-                plot = plot,
-
-                //place holder images:
-                images = listOf("https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
-                    "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
-                    "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
-                    "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
-                //rating = 7.0f
-                rating = if (ratingIsValid) rating.toFloat() else 0f //needed so it doesnt crash at input
-            )
-
-
-
+/** ADD NEW MOVIE **/
 
             Button(
                 enabled = isEnabledSaveButton,
-                onClick = { movieViewModel.addMovie(newMovie)
+                onClick = {
+                    val newMovie: Movie = Movie( //here otherwise added double
+                        id = "id_placeholder", // todo which id??
+                        title = title,
+                        year = year,
+                        genre = getSelectedGenreList(genreList = genreItems),
+                        director = director,
+                        actors = actors,
+                        plot = plot,
+
+                        //place holder images:
+                        images = listOf("https://imgur.com/a/RdyG2ZN",
+                            "https://imgur.com/a/RdyG2ZN",
+                            "https://imgur.com/a/RdyG2ZN",
+                            "https://imgur.com/a/RdyG2ZN"),
+                        //rating = 7.0f
+                        rating = if (ratingIsValid) rating.toFloat() else 0f //needed so it doesnt crash at input
+                    )
+                    movieViewModel.addMovie(newMovie)
+
+                    //navController.navigate(ScreenRoutes.HomeScreen.route)
+
                 }) {
                 Text(text = stringResource(R.string.add))
             }
@@ -331,7 +332,7 @@ fun enableSaveButton (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid:
 }
 
 @Composable
-fun errorMessage (isError: Boolean, variable: String, message: String = "Invalid $variable entered") {
+fun ErrorMessage (isError: Boolean, variable: String, message: String = "Invalid $variable entered") {
     AnimatedVisibility (isError) {
         Text(
             text = message,
