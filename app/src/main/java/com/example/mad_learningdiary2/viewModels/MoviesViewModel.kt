@@ -54,33 +54,10 @@ fun getSelectedGenreList (genreList: List<ListItemSelectable>): MutableList<Genr
     return selectedGenreList
 }
 
-//refactor??
-/*
-fun validateInput (toValidate : String?): Boolean {
-    return if (toValidate != null) {
-        if(toValidate.isNotEmpty() ) {
-            Log.i("validation", "$toValidate is validated")
-            true
-        } else {
-            Log.i("validation", "$toValidate is not validated")
-            false
-        }
-    } else {
-        false
-    }
-}
-
-*/
 
 
 fun validateInput (toValidate : String): Boolean {
-    return if(toValidate.isNotEmpty() ) {
-            Log.i("validation", "$toValidate is validated")
-            true
-        } else {
-            Log.i("validation", "$toValidate is not validated")
-            false
-        }
+    return toValidate.isNotEmpty()
 }
 
 fun validateIfString (toValidate: Any) : Boolean {
@@ -94,10 +71,5 @@ fun validateRating (toValidate: String): Boolean {
 fun validateGenre (genreList: MutableList<Genre>) : Boolean {
     return genreList.isNotEmpty()
 }
-//string & not empty: title, year, director, actors - done
-//string: plot (can be empty) - done
-//rating: float, not empty -
-//genres: at least 1 enum selected
-
 
 
