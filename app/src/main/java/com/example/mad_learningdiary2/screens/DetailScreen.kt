@@ -15,10 +15,6 @@ import com.example.mad_learningdiary2.widgets.HorizontalScrollableImageView
 import com.example.mad_learningdiary2.widgets.MovieRow
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
-//prep code by leon
-fun filterMovie(movieId: String): Movie {
-    return getMovies().filter { it.id == movieId}[0]
-}
 @Composable
 fun DetailScreen(
     navController: NavController,

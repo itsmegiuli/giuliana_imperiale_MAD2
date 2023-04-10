@@ -1,6 +1,5 @@
 package com.example.mad_learningdiary2.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -21,6 +20,7 @@ import com.example.mad_learningdiary2.models.Genre
 import com.example.mad_learningdiary2.models.ListItemSelectable
 import com.example.mad_learningdiary2.models.Movie
 import com.example.mad_learningdiary2.viewModels.*
+import com.example.mad_learningdiary2.widgets.ErrorMessage
 import com.example.mad_learningdiary2.widgets.SimpleTopAppBar
 
 //prep code by leon
@@ -61,7 +61,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             horizontalAlignment = Alignment.Start
         ) {
 
-            var countForId = 1; // increases when movie added to make id unique
+            var countForNewMovieID = 1; // increases when movie added to make id unique
 
             var title by remember {
                 mutableStateOf("")
@@ -162,8 +162,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                     yearIsValid = validateInput(it)
                     yearShowErrorMessage = !yearIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
-
-                    //errorMessage(isError = !yearIsValid)
 
                 },
                 label = {Text(stringResource(R.string.enter_movie_year)) },
@@ -271,12 +269,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
 
-                    //rating = if (it.toFloatOrNull() == null) {
-                      //  0f.toString()
-                    //} else {
-                      //  it
-                    //} //prevents crash when invalid? - i wish
-
                     rating = if(it.startsWith("0")) {
                         ""
                     } else {
@@ -299,7 +291,7 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 onClick = {
 
                     val newMovie: Movie = Movie( //here otherwise added double
-                        id = countForId.toString(), // which id?? count ok?
+                        id = countForNewMovieID.toString(), // id?
                         title = title,
                         year = year,
                         genre = getSelectedGenreList(genreList = genreItems),
@@ -308,15 +300,15 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                         plot = plot,
 
                         //place holder images:
-                        images = listOf("https://i.imgur.com/goki8K0.jpeg",
-                            "https://i.imgur.com/goki8K0.jpeg",
-                            "https://i.imgur.com/goki8K0.jpeg",
-                            "https://i.imgur.com/goki8K0.jpeg"),
+                        images = listOf("https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
+                            "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
+                            "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png",
+                            "https://www.maricopa-sbdc.com/wp-content/uploads/2020/11/image-coming-soon-placeholder.png"),
                         //rating = 7.0f
                         rating = if (ratingIsValid) rating.toFloat() else 0f //needed so it doesnt crash at input
                     )
                     movieViewModel.addMovie(newMovie)
-                    countForId =+ 1
+                    countForNewMovieID =+ 1 // so I get unique IDs for new movies
 
 
                 }) {
@@ -333,16 +325,3 @@ fun enableSaveButton (titleIsValid: Boolean, yearIsValid: Boolean, genreIsValid:
     return titleIsValid && yearIsValid && genreIsValid && directorIsValid && actorsIsValid && plotIsValid && ratingIsValid
 }
 
-@Composable
-fun ErrorMessage (isError: Boolean, variable: String, message: String = "Invalid $variable entered") {
-    AnimatedVisibility (isError) {
-        Text(
-            text = message,
-            color = MaterialTheme.colors.error,
-            style = MaterialTheme.typography.caption,
-            modifier = Modifier.padding(start = 16.dp),
-
-        )
-    }
-
-}

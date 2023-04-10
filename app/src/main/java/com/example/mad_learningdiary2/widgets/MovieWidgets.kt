@@ -187,3 +187,17 @@ fun HorizontalScrollableImageView(movie: Movie) {
         }
     }
 }
+
+@Composable
+fun ErrorMessage (isError: Boolean, variable: String, message: String = "Invalid $variable entered") {
+    AnimatedVisibility(isError) {
+        Text(
+            text = message,
+            color = MaterialTheme.colors.error,
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier.padding(start = 16.dp),
+
+            )
+    }
+
+}
