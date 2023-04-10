@@ -61,6 +61,8 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             horizontalAlignment = Alignment.Start
         ) {
 
+            var countForId = 1; // increases when movie added to make id unique
+
             var title by remember {
                 mutableStateOf("")
             }
@@ -141,7 +143,6 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
                     title = it
-                    //todo maybe not 2 different var needed for _IsValid & _ShowErrorMessage
                     titleIsValid = validateInput(it)
                     titleShowErrorMessage = !titleIsValid
                     isEnabledSaveButton = enableSaveButton (titleIsValid, yearIsValid, genreIsValid, directorIsValid, actorsIsValid, plotIsValid, ratingIsValid)
@@ -296,8 +297,9 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
             Button(
                 enabled = isEnabledSaveButton,
                 onClick = {
+
                     val newMovie: Movie = Movie( //here otherwise added double
-                        id = "id_placeholder", // todo which id??
+                        id = countForId.toString(), // which id?? count ok?
                         title = title,
                         year = year,
                         genre = getSelectedGenreList(genreList = genreItems),
@@ -306,16 +308,16 @@ fun MainContent(modifier: Modifier = Modifier, movieViewModel: MoviesViewModel) 
                         plot = plot,
 
                         //place holder images:
-                        images = listOf("https://imgur.com/a/RdyG2ZN",
-                            "https://imgur.com/a/RdyG2ZN",
-                            "https://imgur.com/a/RdyG2ZN",
-                            "https://imgur.com/a/RdyG2ZN"),
+                        images = listOf("https://i.imgur.com/goki8K0.jpeg",
+                            "https://i.imgur.com/goki8K0.jpeg",
+                            "https://i.imgur.com/goki8K0.jpeg",
+                            "https://i.imgur.com/goki8K0.jpeg"),
                         //rating = 7.0f
                         rating = if (ratingIsValid) rating.toFloat() else 0f //needed so it doesnt crash at input
                     )
                     movieViewModel.addMovie(newMovie)
+                    countForId =+ 1
 
-                    //navController.navigate(ScreenRoutes.HomeScreen.route)
 
                 }) {
                 Text(text = stringResource(R.string.add))
