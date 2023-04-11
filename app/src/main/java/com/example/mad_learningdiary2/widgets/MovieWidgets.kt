@@ -100,7 +100,9 @@ fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
 
     ){
         Icon(modifier = Modifier
-            .clickable{ onFavClick(movie)},
+            .clickable{ onFavClick(movie)
+                favIcon = if (movie.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+            },
             tint = MaterialTheme.colors.secondary,
             imageVector = favIcon,
             contentDescription = "Add to favorites")
