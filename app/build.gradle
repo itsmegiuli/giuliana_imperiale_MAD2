@@ -9,11 +9,11 @@ configurations.implementation{
 }
 
 android {
-    namespace 'com.example.movieappmad23'
+    namespace 'com.example.mad_learningdiary2'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.movieappmad23"
+        applicationId "com.example.mad_learningdiary2"
         minSdk 28
         targetSdk 33
         versionCode 1
