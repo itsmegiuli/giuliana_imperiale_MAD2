@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+configurations.implementation{
+    exclude group: 'org.jetbrains.kotlin',module:'kotlin-stdlib-jdk8'
+}
+
 android {
     namespace 'com.example.mad_learningdiary2'
     compileSdk 33
